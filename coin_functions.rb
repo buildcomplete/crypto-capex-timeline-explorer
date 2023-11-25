@@ -81,7 +81,7 @@ def save_birthday(id, date)
 end
 
 def load_birthday(id)
-  Date.parse JSON.load File.new coin_birth_day_filename("bitcoin")
+  Date.parse JSON.load File.new coin_birth_day_filename(id)
 end
 
 # find and save date of when a coin have market cap
