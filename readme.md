@@ -1,7 +1,7 @@
 # Exploring market cap for different crypto currencies.
 This project is for exploring crypto currency market cap as function of time, the main purpose is to identify which coins became influential and investigate why.
 
-This readmy was used for prototyping all the code, later function was var moved to [coin_methods.rb](coin_methods.rb)
+This readmy was used for prototyping all the code, later function was var moved to [coin_functions.rb](coin_functions.rb)
 
 Create folder for coins, and for historical data
 ```bash
