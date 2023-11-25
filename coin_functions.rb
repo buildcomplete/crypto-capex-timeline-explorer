@@ -76,6 +76,13 @@ def coin_birth_day_filename(id)
   "coins/history/birthdays/" + id.sub(" ", "_") + ".json"
 end
 
+def save_birthday(id, date)
+  File.write(coin_birth_day_filename(id), date.to_json)
+end
+
+def load_birthday(id)
+  Date.parse JSON.load File.new coin_birth_day_filename("bitcoin")
+end
 
 # find and save date of when a coin have market cap
 # The algorithm using binary search to reduce amount of lookups
@@ -87,7 +94,6 @@ def find_coin_birth_day(id, start_date, stop_date)
   actual_date = (start_date + (stop_date - start_date).to_i  / 2)
   puts "Searching for " + id + " - " + (actual_date.strftime "%d-%m-%Y") + " Range: " + (start_date.strftime "%d-%m-%Y") + " " + (stop_date.strftime "%d-%m-%Y")
 
-
   if (!download_missing_coin_hist_with_retry(id, actual_date, 7)) then
       puts("Failed fetching data")
       return false
@@ -97,7 +103,7 @@ def find_coin_birth_day(id, start_date, stop_date)
 
   # found birth day
   if (has_market_cap and actual_date == start_date) then
-      File.write(coin_birth_day_filename(id), actual_date.to_json)
+    save_birthday(id, actual_date)
       return true
   end
 
@@ -106,12 +112,12 @@ def find_coin_birth_day(id, start_date, stop_date)
       return find_coin_birth_day(id, start_date + 1, stop_date)
   end
 
-  if has_market_cap then
+  # search according to new boundary
+  if has_market_cap then # found then lowe rregion
       return find_coin_birth_day(id, start_date, actual_date)
-  else
+  else # not found, upper region
       return find_coin_birth_day(id, actual_date, stop_date)
   end
 
-  # search according to new boundary
   return false
 end
