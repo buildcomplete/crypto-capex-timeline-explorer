@@ -1,3 +1,6 @@
+# Exploring market cap for different crypto currencies.
+This project is for exploring crypto currency market cap as function of time, the main purpose is to identify which coins became influential and investigate why.
+
 List possible vs currencies 
 ```bash
 curl -X 'GET' 'https://api.coingecko.com/api/v3/simple/supported_vs_currencies' -H 'accept: application/json' >> supported_vs_currencies.json
