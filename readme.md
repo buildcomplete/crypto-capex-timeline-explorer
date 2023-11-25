@@ -69,19 +69,19 @@ num_days = (end_date - start_date).to_i
 width = 1900.0
 step = num_days / width # Step in days, ruby works amazing adding numbers as days respecting remainders as fraction of days
  
-#start_date.strftime "%d-%m-%Y"
+```
+# detect first entry of each coin
+Find coin birthday, use binary search reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
+```ruby
+market_cap_50.each { |x|
+    find_coin_birth_day(x[:id], start_date, end_date)
+}
 ```
 
-
-# download historical data for coins
-
-
-# detect first entry of each coin
-Use binary search to find entry of birth reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
+# Expand with birthday
+If we did find all birthdays, then we can expand the cap50 hashes with the information
 ```ruby
-
-market_cap_50.each { |x|
-    id = x[0]
-    find_coin_birth_day(id, start_date, stop_date)
+market_cap_50.map { |x|
+    x[:birthday]=get_coin_birthday()
 }
 ```
