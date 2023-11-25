@@ -75,3 +75,43 @@ end
 def coin_birth_day_filename(id)
   "coins/history/birthdays/" + id.sub(" ", "_") + ".json"
 end
+
+
+# find and save date of when a coin have market cap
+# The algorithm using binary search to reduce amount of lookups
+def find_coin_birth_day(id, start_date, stop_date)
+  if (File.file? (coin_birth_day_filename(id))) then
+      return true
+  end
+
+  actual_date = (start_date + (stop_date - start_date).to_i  / 2)
+  puts "Searching for " + id + " - " + (actual_date.strftime "%d-%m-%Y") + " Range: " + (start_date.strftime "%d-%m-%Y") + " " + (stop_date.strftime "%d-%m-%Y")
+
+
+  if (!download_missing_coin_hist_with_retry(id, actual_date, 7)) then
+      puts("Failed fetching data")
+      return false
+  end
+
+  has_market_cap = coin_hist_has_market_cap?(id, actual_date)
+
+  # found birth day
+  if (has_market_cap and actual_date == start_date) then
+      File.write(coin_birth_day_filename(id), actual_date.to_json)
+      return true
+  end
+
+  #search depleted
+  if (!has_market_cap and actual_date == start_date and actual_date != stop_date) then
+      return find_coin_birth_day(id, start_date + 1, stop_date)
+  end
+
+  if has_market_cap then
+      return find_coin_birth_day(id, start_date, actual_date)
+  else
+      return find_coin_birth_day(id, actual_date, stop_date)
+  end
+
+  # search according to new boundary
+  return false
+end
