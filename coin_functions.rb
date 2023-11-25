@@ -80,13 +80,13 @@ def save_birthday(id, date)
   File.write(coin_birth_day_filename(id), date.to_json)
 end
 
-def load_birthday(id)
+def get_birthday(id)
   Date.parse JSON.load File.new coin_birth_day_filename(id)
 end
 
 # find and save date of when a coin have market cap
 # The algorithm using binary search to reduce amount of lookups
-def find_coin_birth_day(id, start_date, stop_date)
+def find_coin_birthday(id, start_date, stop_date)
   if (File.file? (coin_birth_day_filename(id))) then
       return true
   end
@@ -107,16 +107,16 @@ def find_coin_birth_day(id, start_date, stop_date)
       return true
   end
 
-  #search depleted
+  # special condition due to round doqn logic, if not we  get stuck at border when start_date+1==stop_date.
   if (!has_market_cap and actual_date == start_date and actual_date != stop_date) then
-      return find_coin_birth_day(id, start_date + 1, stop_date)
+      return find_coin_birthday(id, start_date + 1, stop_date)
   end
 
   # search according to new boundary
   if has_market_cap then # found then lowe rregion
-      return find_coin_birth_day(id, start_date, actual_date)
+      return find_coin_birthday(id, start_date, actual_date)
   else # not found, upper region
-      return find_coin_birth_day(id, actual_date, stop_date)
+      return find_coin_birthday(id, actual_date, stop_date)
   end
 
   return false

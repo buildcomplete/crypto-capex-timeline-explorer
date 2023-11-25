@@ -57,7 +57,7 @@ market_cap.sort_by! {|x| -x[1]}
 # Proceed only considering top50 from today 22.Nov 2023
 Also calculate percentage of market cap now
 ```ruby
-market_cap_50 = market_cap[0..49].map {|x| [x[0], x[1], x[1]/market_cap_total] }
+market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
 ```
 
 # Get coin value for each day, given target resolution, using NN sampling
@@ -74,14 +74,16 @@ step = num_days / width # Step in days, ruby works amazing adding numbers as day
 Find coin birthday, use binary search reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
 ```ruby
 market_cap_50.each { |x|
-    find_coin_birth_day(x[:id], start_date, end_date)
+    find_coin_birthday(x[:id], start_date, end_date)
 }
 ```
 
 # Expand with birthday
-If we did find all birthdays, then we can expand the cap50 hashes with the information
+If we did find all birthdays, 
+expand the cap50 hashes with the birthday
 ```ruby
-market_cap_50.map { |x|
-    x[:birthday]=get_coin_birthday()
+market_cap_50.map! { |x|
+    x.merge( {:birthday => get_birthday(x[:id])} )
 }
 ```
+
