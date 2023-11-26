@@ -72,6 +72,13 @@ def coin_hist_has_market_cap?(id, date)
   return false
 end
 
+def safe_get_coin_market_cap(id, date)
+  if coin_hist_has_market_cap?(id, date) then
+    return (get_coin_hist_from_file(id, date)["market_data"]["market_cap"]["usd"])
+  end
+  return 0.0
+end
+
 def coin_birth_day_filename(id)
   "coins/history/birthdays/" + id.sub(" ", "_") + ".json"
 end

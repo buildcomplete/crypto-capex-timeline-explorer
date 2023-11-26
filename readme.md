@@ -8,6 +8,7 @@ Create folder for coins, and for historical data
 mkdir coins
 mkdir coins/history
 mkdir coins/history/birthdays
+mkdir assets
 ```
 
 Fetching list of all coins from coingecko
@@ -87,21 +88,40 @@ market_cap_50.map! { |x|
 }
 ```
 
-# get coin cap pr month since for top 10 coins
+# Get coin data pr month for 15 oldes and 15 most valuable coins (21 merged)
 ```ruby
 test_date = start_date
-old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
-while test_date <= end_date 
-    puts(test_date)
+dates = [];
+while test_date <= end_date
+    dates.push(test_date)
+    test_date = test_date.next_month
+end
 
+old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
+dates.each {|test_date|
     # take old or coins with highest value
     old_or_valuable_coins.each {|x| 
         if (test_date >= x[:birthday]  ) then
             download_missing_coin_hist_with_retry(x[:id], test_date, 7)
         end
     }
-    test_date = test_date.next_month
-end
+}
 ```
 
 # Create CSV file with market cap for each coin
+```ruby
+File.open("market_cap.csv", "w") do |file|
+  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
+  old_or_valuable_coins.each {|c|
+    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
+  }
+end
+```
+
+# Download thumbs
+```ruby
+old_or_valuable_coins.each { |c|
+  img = load_coin_data(c[:id])["image"]["thumb"]
+  system "curl " + img + " > assets/"+ c[:id] +"_thumb.png"
+}
+```
