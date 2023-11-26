@@ -87,3 +87,21 @@ market_cap_50.map! { |x|
 }
 ```
 
+# get coin cap pr month since for top 10 coins
+```ruby
+test_date = start_date
+old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
+while test_date <= end_date 
+    puts(test_date)
+
+    # take old or coins with highest value
+    old_or_valuable_coins.each {|x| 
+        if (test_date >= x[:birthday]  ) then
+            download_missing_coin_hist_with_retry(x[:id], test_date, 7)
+        end
+    }
+    test_date = test_date.next_month
+end
+```
+
+# Create CSV file with market cap for each coin
