@@ -70,7 +70,11 @@ ids.each { |x|
         puts "✔ : " + x
 
 }
+```
+* Notice, all data fecthing stuff was run several times since the rate limit blocked download even though I tried to respoect it.
 
+### Filter data when download has succeded
+```ruby
 # Filter coins with no capital value and calculate total capital
 market_cap = ids
     .map{ |id| 
@@ -80,11 +84,9 @@ market_cap = ids
 
 market_cap_total = market_cap.inject(0.0) {|tot, x| tot+x[1]}
 market_cap.sort_by! {|x| -x[1]}
-```
 
 # Proceed only considering top50 from today 22.Nov 2023
-Also calculate percentage of market cap now
-```ruby
+# and calculate percentage of market cap
 market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
 ```
 
@@ -103,14 +105,14 @@ while test_date <= end_date
 end
 ```
 # Detect first entry of each coin
-Find coin birthday, use binary search reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
+Find coin birthday, use binary search reducing number of dates to visit from worst case '(end_date-start_date).to_i => 3836' to worst case 'Math.log2(3836)=>11.9' lookups pr coin
 ```ruby
 market_cap_50.each { |x|
     find_coin_birthday(x[:id], start_date, end_date)
 }
 ```
 
-# Expand with birthday
+### Expand with birthday
 If we did find all birthdays, 
 expand the cap50 hashes with the birthday
 ```ruby
@@ -119,10 +121,8 @@ market_cap_50.map! { |x|
 }
 ```
 
-# Get coin data pr month for 15 oldes and 15 most valuable coins (21 merged)
+### Get coin data pr month for 15 oldes and 15 most valuable coins (21 merged)
 ```ruby
-
-
 old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
 dates.each {|test_date|
     # take old or coins with highest value
@@ -134,7 +134,7 @@ dates.each {|test_date|
 }
 ```
 
-# Create CSV file with market cap for each coin
+### Create CSV file with market cap for each coin
 ```ruby
 File.open("market_cap.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
@@ -144,7 +144,7 @@ File.open("market_cap.csv", "w") do |file|
 end
 ```
 
-# Download thumbs
+### Download thumbs
 ```ruby
 old_or_valuable_coins.each { |c|
   img = load_coin_data(c[:id])["image"]["thumb"]
