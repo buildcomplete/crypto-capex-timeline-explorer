@@ -121,7 +121,7 @@ market_cap_50.map! { |x|
 }
 ```
 
-### Get coin data pr month for 15 oldes and 15 most valuable coins (21 merged)
+### Get coin data pr month for 15 oldest and 15 most valuable coins (21 merged)
 ```ruby
 old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
 dates.each {|test_date|
@@ -145,6 +145,7 @@ end
 ```
 
 ### Download thumbs
+I consider using them in my plot
 ```ruby
 old_or_valuable_coins.each { |c|
   img = load_coin_data(c[:id])["image"]["thumb"]
