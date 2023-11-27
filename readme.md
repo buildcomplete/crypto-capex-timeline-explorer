@@ -71,7 +71,7 @@ ids.each { |x|
 
 }
 ```
-* Notice, all data fecthing stuff was run several times since the rate limit blocked download even though I tried to respoect it.
+* Notice, all data fecthing stuff was run several times since the rate limit blocked download even though I tried to respect it.
 
 ### Filter data when download has succeded
 ```ruby
