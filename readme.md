@@ -88,15 +88,19 @@ Also calculate percentage of market cap now
 market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
 ```
 
-# Get coin value for each day, given target resolution, using NN sampling
+# Set ranges for data acqusitions
 ```ruby
 require "date"
 start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
 end_date = Date.new(2023, 11, 01) # First day of this month (when creating script)
-num_days = (end_date - start_date).to_i
-width = 1900.0
-step = num_days / width # Step in days, ruby works amazing adding numbers as days respecting remainders as fraction of days
- 
+
+test_date = start_date
+dates = [];
+while test_date <= end_date
+    dates.push(test_date)
+    dates.push(test_date + 15)
+    test_date = test_date.next_month
+end
 ```
 # detect first entry of each coin
 Find coin birthday, use binary search reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
@@ -117,13 +121,7 @@ market_cap_50.map! { |x|
 
 # Get coin data pr month for 15 oldes and 15 most valuable coins (21 merged)
 ```ruby
-test_date = start_date
-dates = [];
-while test_date <= end_date
-    dates.push(test_date)
-    dates.push(test_date + 15)
-    test_date = test_date.next_month
-end
+
 
 old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
 dates.each {|test_date|
