@@ -1,12 +1,35 @@
 # Exploring market cap for different crypto currencies.
 This project is for exploring crypto currency market cap as function of time, the main purpose is to identify which coins became influential and investigate why.
 
-This readmy was used for prototyping all the code, later function was var moved to [coin_functions.rb](coin_functions.rb)
+This readmy was used for prototyping all the code, later functions was var moved to [coin_functions.rb](coin_functions.rb)
 
 ## Result plots:
+
 ![Market cap ratio all coins](plots/market_cap_ratio_all.png)
 ![Market cap ratio alt coins](plots/market_cap_ratio_alt_coins.png)
 ![Market cap alt coins](plots/market_cap_alt_coins.png)
+Data provided by CoinGecko using [CoinGecko public API ](https://www.coingecko.com/api/documentation) 
+
+# Code for generating data.
+All stuff is happening inside a container.
+```docker
+FROM ruby:latest
+WORKDIR /root/gecko
+CMD ["tail", "-f", "/dev/null"] 
+```
+
+Started with a persistance storage in my host OS
+```docker
+version: "3.2"
+services:
+  coinexplorer:
+    container_name: coinexplorer
+    build: './init/'
+    volumes:
+      - ./init/root:/root 
+```
+
+## Initialize folders...
 Create folder for coins, and for historical data
 ```bash
 mkdir coins
@@ -98,6 +121,7 @@ test_date = start_date
 dates = [];
 while test_date <= end_date
     dates.push(test_date)
+    dates.push(test_date + 15)
     test_date = test_date.next_month
 end
 
