@@ -3,6 +3,10 @@ This project is for exploring crypto currency market cap as function of time, th
 
 This readmy was used for prototyping all the code, later function was var moved to [coin_functions.rb](coin_functions.rb)
 
+## Result plots:
+![Market cap ratio all coins](plots/market_cap_ratio_all.png)
+![Market cap ratio alt coins](plots/market_cap_ratio_alt_coins.png)
+![Market cap alt coins](plots/market_cap_alt_coins.png)
 Create folder for coins, and for historical data
 ```bash
 mkdir coins
