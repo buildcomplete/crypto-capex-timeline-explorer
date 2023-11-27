@@ -38,37 +38,37 @@ mkdir coins/history/birthdays
 mkdir assets
 ```
 
-Fetching list of all coins from coingecko
+### Fetching list of all coins from coingecko
 ```bash
 curl -X 'GET' 'https://api.coingecko.com/api/v3/coins/list?include_platform=true' -H 'accept: application/json' >> coins.json
 ```
 
-Load Coins
+### Load Coins
 ```ruby
 require 'json'
 coins = JSON.load File.new "coins.json"
 ids = coins.map {|coin| coin["id"] }
 ```
 
-Create coin info request
+### Get coin info
+The market cap from this is used to select coins of interest
 ```ruby
 ids.each { |x|
 
+    # If we do not have the data, try to fetch it, with 5 retrys
+    cmd = coin_info_curl_command x
+    i=1
+    while (!coin_info_valid? x) and i < 6
+        puts ("⚙"*i) +": " + x
+        system cmd
+        sleep 1 + i # Respect coingecko rate limit 30requests / min
+        i = i + 1
+    end
+    
     # If we have valid data for the coin, then proceed
     if  coin_info_valid? x then
         puts "✔ : " + x
 
-    # If we did not have the data, try to fetch it, with 5 retrys
-    else
-        cmd = coin_info_curl_command x
-        i=1
-        while (!coin_info_valid? x) and i < 6
-            puts ("⚙"*i) +": " + x
-            system cmd
-            sleep 1 + i
-            i=i+1
-        end
-    end
 }
 
 # Filter coins with no capital value and calculate total capital
@@ -102,7 +102,7 @@ while test_date <= end_date
     test_date = test_date.next_month
 end
 ```
-# detect first entry of each coin
+# Detect first entry of each coin
 Find coin birthday, use binary search reducing number of dates to visit from worst case 'diff.to_i => 3836' to worst case 'Math.log2(diff.to_i)=>11.9' lookups pr coin
 ```ruby
 market_cap_50.each { |x|
