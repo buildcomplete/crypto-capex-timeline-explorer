@@ -136,7 +136,7 @@ dates.each {|test_date|
 
 ### Create CSV file with market cap for each coin
 ```ruby
-File.open("market_cap.csv", "w") do |file|
+File.open("market_cap2.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
