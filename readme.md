@@ -8,9 +8,42 @@ This readme was used for prototyping all the code, later functions was moved to 
 ![Market cap ratio all coins](plots/market_cap_ratio_all.png)
 ![Market cap ratio alt coins](plots/market_cap_ratio_alt_coins.png)
 ![Market cap alt coins](plots/market_cap_alt_coins.png)
-Data provided by CoinGecko using [CoinGecko public API ](https://www.coingecko.com/api/documentation) 
+Data provided by CoinGecko using [CoinGecko public API ](https://www.coingecko.com/api/documentation)
 
-# Code for generating data.
+## Result Discussion
+Bitcoin has a very large percentage of the value, and has keept the value for several years, lets start to see what is Bitcoin, then what do the other early coins offer, what problem do the new coin try to solve.
+
+The following table gives an overview of different currencies 
+|Currency|Starting date|Vision|White paper|Transaction speed (trx/s)|
+|---|---|---|---|---|
+|Bitcoin|2009|To create a decentralized zero trust currency that minimzed transaction cost|[bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)|7
+|Litecoin|2013-05|A faster and cheaper alternative to bitcoin, lower transaction fee, faster transactions|N/A|56
+|Ripple|2013-08|Faster transaction speed by utilizing collectively-trusted subnetworks|[ripple-whitepaper](https://whitepaper.io/document/1/ripple-whitepaper)|1500
+|Dogecoin|2013-12|Created as a joke, but it works|[dogecoin Github](https://github.com/dogecoin/dogecoin)|23
+|Monero|2014-05|A privacy focused currency, as it turned out previous currencies was only pseudo anonymous-and the owner can in many cases be identifed. Monero wanted to fix that by making the transaction amount, sender and receiver truely anonymous|[cryptonote-whitepaper.pdf](https://www.getmonero.org/resources/research-lab/pubs/cryptonote-whitepaper.pdf)||1700
+|Stellar|2014-08|Faster transaction and confirmation speed|[stellar-consensus-protocol](https://stellar.org/learn/stellar-consensus-protocol)|1000
+|Tether|2015-03|purpose|wp|tr/s
+|Etherium|2015-08|purpose|wp|tr/s
+|Bitcoin cash|2017-08|purpose|wp|tr/s
+|binancecoin|2017-09|purpose|wp|tr/s
+|cardano|2017-10|purpose|wp|tr/s
+|tron|2017-11|purpose|wp|tr/s
+|chainlink|2017-11|purpose|wp|tr/s
+|maker|2017-12|purpose|wp|tr/s
+|usd-coin|2018-10|purpose|wp|tr/s
+|matic-network|2019-04|purpose|wp|tr/s
+|solana|2020-04|purpose|wp|tr/s
+|polkadot|2020-08|purpose|wp|tr/s
+|avalanche-2|2020-09|purpose|wp|tr/s
+|staked-ether|2020-12|purpose|wp|tr/s
+
+### Bitcoin
+Bitcoin was the first cryptocurrency that still is successfull, the reasons are probably that it is decentralized
+
+
+# Generating data.
+
+## Environment setup
 All stuff is happening inside a container.
 ```docker
 FROM ruby:latest
@@ -140,6 +173,16 @@ File.open("market_cap2.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
+  }
+end
+```
+
+### Create CSV file with market trade volume for each coin
+```ruby
+File.open("market_vol.csv", "w") do |file|
+  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
+  old_or_valuable_coins.each {|c|
+    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_volume(c[:id], date).to_s} )
   }
 end
 ```
