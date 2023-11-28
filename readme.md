@@ -8,6 +8,7 @@ This readme was used for prototyping all the code, later functions was moved to 
 ![Market cap ratio all coins](plots/market_cap_ratio_all.png)
 ![Market cap ratio alt coins](plots/market_cap_ratio_alt_coins.png)
 ![Market cap alt coins](plots/market_cap_alt_coins.png)
+![Trade volume](plots/crypto_currency_trade_volume.png)
 Data provided by CoinGecko using [CoinGecko public API ](https://www.coingecko.com/api/documentation)
 
 ## Result Discussion
