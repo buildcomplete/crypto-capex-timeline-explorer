@@ -87,6 +87,8 @@ ids = coins.map {|coin| coin["id"] }
 ### Get coin info
 The market cap from this is used to select coins of interest
 ```ruby
+require_relative "coin_functions" # Load coin functions
+
 ids.each { |x|
 
     # If we do not have the data, try to fetch it, with 5 retrys
@@ -134,7 +136,9 @@ test_date = start_date
 dates = [];
 while test_date <= end_date
     dates.push(test_date)
-    dates.push(test_date + 15)
+    dates.push(test_date + 7)
+    dates.push(test_date + 7+8)
+    dates.push(test_date + 7+8+7)
     test_date = test_date.next_month
 end
 ```
@@ -168,9 +172,19 @@ dates.each {|test_date|
 }
 ```
 
+### calculate average trade volume for each coin
+I would like to order coins by trade volume in the diagram, to do this I calculate average trade volume for each coin
+```ruby
+old_or_valuable_coins.map! {|coin| 
+    validDates =  dates.select {|date| date>=coin[:birthday]}
+    numValidDates = validDates.length
+    avgVol = validDates.inject(0.0) {|avgVol, date| avgVol + safe_get_coin_volume(coin[:id], date) / numValidDates }
+    coin.merge( {:volume => avgVol} )}
+```
+
 ### Create CSV file with market cap for each coin
 ```ruby
-File.open("market_cap2.csv", "w") do |file|
+File.open("market_cap3.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
@@ -179,8 +193,9 @@ end
 ```
 
 ### Create CSV file with market trade volume for each coin
+old_or_valuable_coins.sort_by! {|x| -x[:volume]}
 ```ruby
-File.open("market_vol.csv", "w") do |file|
+File.open("market_vol3.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_volume(c[:id], date).to_s} )
