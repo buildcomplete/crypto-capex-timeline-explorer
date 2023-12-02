@@ -1,3 +1,6 @@
+require "date"
+require 'json'
+
 def coin_filename(id)
   "coins/"+id+".json"
 end
@@ -31,17 +34,34 @@ def get_coin_history_command(id, date)
   "curl -X 'GET' 'https://api.coingecko.com/api/v3/coins/"+ id.sub(" ", "%20") + "/history?date="+(date.strftime "%d-%m-%Y")+"&localization=false' -H 'accept: application/json' > " + (coin_hist_filename(id, date))
 end
 
+# Adding a nasty side effect to coin_hist_valid
+# The function now also creates a cache that get_coin_hist_from_file will rely on
+
+$global_coin_hist_cache = {}
 def coin_hist_valid?(id, date)
   x = coin_hist_filename(id, date)
+  if $global_coin_hist_cache.has_key? x then
+    return  true
+  end
   if File.file? x and (File.size x) > 0 then
       begin
           data = JSON.load File.new x
-          return (data.has_key? "id" and data["id"] == id)
+          if (data.has_key? "id" and data["id"] == id) then
+            $global_coin_hist_cache[x] = data;
+            return true
+          end
       rescue
-          return false
+        return false
+
       end
   end
   return false
+end
+
+def get_coin_hist_from_file(id, date)
+  return (coin_hist_valid?(id, date) ?
+    $global_coin_hist_cache[coin_hist_filename(id, date)]
+    : nil )
 end
 
 def download_missing_coin_hist_with_retry(id, date, num_retries)
@@ -60,9 +80,6 @@ def download_missing_coin_hist_with_retry(id, date, num_retries)
   return false
 end
 
-def get_coin_hist_from_file(id, date)
-  return JSON.load File.new coin_hist_filename(id, date)
-end
 
 def coin_hist_has_market_cap?(id, date)
   if coin_hist_valid?(id, date) then
@@ -134,4 +151,10 @@ def find_coin_birthday(id, start_date, stop_date)
   end
 
   return false
+end
+
+$a_global_variable = []
+def can_i_create_a_global_variable(arg)
+  $a_global_variable.push(arg)
+  puts(arg)
 end
