@@ -132,15 +132,15 @@ require "date"
 start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
 end_date = Date.new(2023, 11, 01) # First day of this month (when creating script)
 
-test_date = start_date
-dates = [];
-while test_date <= end_date
-    dates.push(test_date)
-    dates.push(test_date + 7)
-    dates.push(test_date + 7+8)
-    dates.push(test_date + 7+8+7)
-    test_date = test_date.next_month
-end
+# test_date = start_date
+dates = (start_date..end_date).step(3)
+# while test_date <= end_date
+#     dates.push(test_date)
+#     dates.push(test_date + 7)
+#     dates.push(test_date + 7+8)
+#     dates.push(test_date + 7+8+7)
+#     test_date = test_date.next_month
+# end
 ```
 # Detect first entry of each coin
 Find coin birthday, use binary search reducing number of dates to visit from worst case '(end_date-start_date).to_i => 3836' to worst case 'Math.log2(3836)=>11.9' lookups pr coin

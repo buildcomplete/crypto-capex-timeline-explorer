@@ -50,7 +50,7 @@ def download_missing_coin_hist_with_retry(id, date, num_retries)
   while (!coin_hist_valid?(id, date)) and i < (num_retries+1)
       puts ("⚙"*i) + ": " + id + " " + (date.strftime "%d-%m-%Y")
       system cmd
-      sleep 1 + i
+      sleep 2 + i
       i=i+1
   end
   if  coin_hist_valid?(id, date) then
