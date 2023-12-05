@@ -130,7 +130,7 @@ market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :
 ```ruby
 require "date"
 start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
-end_date = Date.new(2023, 11, 01) # First day of this month (when creating script)
+end_date = Date.new(2023, 12, 01) 
 
 # test_date = start_date
 dates = (start_date..end_date).step(3)
@@ -184,7 +184,7 @@ old_or_valuable_coins.map! {|coin|
 
 ### Create CSV file with market cap for each coin
 ```ruby
-File.open("market_cap3.csv", "w") do |file|
+File.open("cap.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
@@ -193,9 +193,9 @@ end
 ```
 
 ### Create CSV file with market trade volume for each coin
-old_or_valuable_coins.sort_by! {|x| -x[:volume]}
 ```ruby
-File.open("market_vol3.csv", "w") do |file|
+# old_or_valuable_coins.sort_by! {|x| -x[:volume]}
+File.open("vol.csv", "w") do |file|
   file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
   old_or_valuable_coins.each {|c|
     file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_volume(c[:id], date).to_s} )

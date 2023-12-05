@@ -3,7 +3,7 @@ pkg load image
 graphics_toolkit('qt');
 
 # Load data
-data = csv2cell('market_cap3.csv', ';');
+data = csv2cell('cap.csv', ';');
 labels = data(2:end,1); % Extract the labels
 dates = data(1,2:end); % Extract the dates, skipping the first cell
 dates = datenum(dates, 'yyyy-mm-dd'); % Convert the dates
@@ -11,7 +11,9 @@ mcap = cell2mat(data(2:end,2:end));
 
 % Create a colormap with 21 unique colors
 cmap = colorcube(21);
-
+idx2 = (1:21)';
+idx2 = [idx2(1:2:21); flipud(idx2(2:2:21))];
+cmap = cmap(idx2,:);
 % Create stacked area plot of raw data
 f = figure('Name', 'raw');
 
@@ -35,8 +37,8 @@ end
 N = 3; % Define the number of neighbors to include in the average
 figure('Name', 'Smoothed');
 ##for N2 = 1:3
-  mcap_smooth_temp = smooth2D(mcap, 1, N);
-  mcap_smooth = smooth2D(mcap_smooth_temp, 1, N);
+##  mcap_smooth_temp = smooth2D(mcap, 1, N);
+  mcap_smooth = smooth2D(mcap, 1, N);
 
 ##  subplot(3,1, N2);
   h=area(dates, mcap_smooth', 'LineStyle', 'none'); % Create the stacked area plot
