@@ -38,6 +38,42 @@ The following table gives an overview of different currencies
 |avalanche-2|2020-09|purpose|wp|tr/s
 |staked-ether|2020-12|purpose|wp|tr/s
 
+
+|Dates of interest (Annual investment in bitcoin)|Growth|
+|---|---|
+|25-May-2013|3.827045|
+|15-Jul-2013|6.719136|
+|20-Jan-2014|-0.662773|
+|13-Jul-2014|-0.519522|
+|25-Nov-2014|0.027745|
+|27-Jan-2015|0.877092|
+|16-Mar-2015|0.712103|
+|23-Jun-2015|1.837845|
+|23-Jul-2015|1.558168|
+|09-Sep-2015|1.786709|
+|26-Dec-2015|1.108864|
+|10-Mar-2016|1.945933|
+|30-May-2016|3.434750|
+|29-Jun-2016|3.040315|
+|03-Sep-2016|6.482896|
+|29-Dec-2016|17.936170|
+|21-Jul-2017|1.848606|
+|24-Dec-2017|-0.766777|
+|05-May-2018|-0.314767|
+|07-Jul-2018|0.715076|
+|14-Feb-2019|1.723869|
+|08-Jul-2019|-0.134581|
+|12-Feb-2020|3.374023|
+|28-Mar-2020|8.109648|
+|19-Aug-2020|2.955420|
+|24-Oct-2020|3.729959|
+|01-Apr-2021|-0.236832|
+|31-Oct-2021|-0.684634|
+|05-Apr-2022|-0.344793|
+|04-Jul-2022|0.460795|
+|04-Dec-2022|1.262113|
+|08-Jul-2023|0.000000|
+
 ### Bitcoin
 Bitcoin was the first cryptocurrency that still is successfull, the reasons are probably that it is decentralized
 
@@ -133,7 +169,7 @@ start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko wi
 end_date = Date.new(2023, 12, 01) 
 
 # test_date = start_date
-dates = (start_date..end_date).step(3)
+dates = (start_date..end_date).step(2)
 # while test_date <= end_date
 #     dates.push(test_date)
 #     dates.push(test_date + 7)
