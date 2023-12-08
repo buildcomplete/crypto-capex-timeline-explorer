@@ -152,9 +152,3 @@ def find_coin_birthday(id, start_date, stop_date)
 
   return false
 end
-
-$a_global_variable = []
-def can_i_create_a_global_variable(arg)
-  $a_global_variable.push(arg)
-  puts(arg)
-end
