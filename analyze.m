@@ -7,11 +7,15 @@ graphics_toolkit('qt'); % Ensure we are using qt renderer
 # Load data
 data_mcap = csv2cell('cap.csv', ';');
 data_tvol = csv2cell('vol.csv', ';');
+data_dtime = csv2cell('dtime.csv', ';');
+
 labels = data_mcap(2:end,1); % Extract the labels
 dates = data_mcap(1,2:end); % Extract the dates, skipping the first cell
 dates = datenum(dates, 'yyyy-mm-dd'); % Convert the dates
 mcap = cell2mat(data_mcap(2:end,2:end));
 tvol = cell2mat(data_tvol(2:end,2:end));
+
+
 
 % Create a colormap with 21 unique colors
 cmap = colorcube(21);

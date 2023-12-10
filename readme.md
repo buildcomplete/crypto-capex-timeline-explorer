@@ -75,8 +75,7 @@ The following table gives an overview of different currencies
 |08-Jul-2023|0.000000|
 
 ### Bitcoin
-Bitcoin was the first cryptocurrency that still is successfull, the reasons are probably that it is decentralized
-
+Bitcoin was the first cryptocurrency that still is successfull, the reasons are probably that it is the first decentralized and sucesfully cryptographically secured currency  
 
 # Generating data.
 
@@ -160,10 +159,8 @@ market_cap.sort_by! {|x| -x[1]}
 # Proceed only considering top50 from today 22.Nov 2023
 # and calculate percentage of market cap
 market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
-```
-
+ 
 # Set ranges for data acqusitions
-```ruby
 require "date"
 start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
 end_date = Date.new(2023, 12, 01) 
@@ -238,4 +235,29 @@ old_or_valuable_coins.each { |c|
   img = load_coin_data(c[:id])["image"]["thumb"]
   system "curl " + img + " > assets/"+ c[:id] +"_thumb.png"
 }
+```
+
+### Get time and date of when data was downloaded
+This is mostly just for fun to see how the data was downloaded
+
+I acually had to change the alignement of the csv file, as both octave and excel read wrong when there are more than 32768 chars in a row...
+```ruby
+def safe_get_coin_download_time(id, date)
+  if coin_hist_has_market_cap?(id, date) then
+    return ((File.ctime coin_hist_filename(id, date)).strftime "%y-%m-%d %H:%M:%S")
+  end
+  return "0"
+end
+
+
+File.open("dtime.csv", "w") do |file|
+  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
+  old_or_valuable_coins.each {|c|
+    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_download_time(c[:id], date)} )
+  }
+end
+```
+Read the datetime using octave.
+```m
+datetime = datenum('23-11-2023 01:01:11', 'dd-mm-yyyy HH:MM:SS');
 ```
