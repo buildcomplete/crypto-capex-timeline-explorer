@@ -5,17 +5,23 @@ pkg load miscellaneous % For outputting directly to a markdown file
 graphics_toolkit('qt'); % Ensure we are using qt renderer
 
 # Load data
-data_mcap = csv2cell('cap.csv', ';');
-data_tvol = csv2cell('vol.csv', ';');
-data_dtime = csv2cell('dtime.csv', ';');
+data_mcap = csv2cell('cap.csv', ';')';
+data_tvol = csv2cell('vol.csv', ';')';
+data_price = csv2cell('price.csv', ';')';
 
 labels = data_mcap(2:end,1); % Extract the labels
 dates = data_mcap(1,2:end); % Extract the dates, skipping the first cell
 dates = datenum(dates, 'yyyy-mm-dd'); % Convert the dates
 mcap = cell2mat(data_mcap(2:end,2:end));
 tvol = cell2mat(data_tvol(2:end,2:end));
+prices = cell2mat(data_price(2:end,2:end));
 
-
+mcap = zeros(size(data_mcap)-1);
+for r=2:size(data_mcap,1)
+  for c=2:size(data_mcap,2)
+    mcap(r-1,c-1) = cell2mat(data_mcap(r,c));
+  end
+end
 
 % Create a colormap with 21 unique colors
 cmap = colorcube(21);
@@ -25,25 +31,15 @@ cmap = cmap(idx2,:);
 
 % Plot raw market cap
 f = figure('name', 'market cap and trade volume');
-subplot(1,2,1)
-p = plot(dates, mcap);
-title('market cap');
-datetick('x', 'yyyy-mm-dd'); % Format the x-axis as dates
-for i = 1:length(p) % Loop over the line objects
-  set(p(i), 'Color', cmap(i, :)); % Set the color of each line
-end
+subplot(3,1,1)
+coin_plot(dates, mcap, 'Market Cap', cmap);
 
-subplot(1,2,2)
-p = plot(dates, tvol);
-title('Trade volume');
-datetick('x', 'yyyy-mm-dd'); % Format the x-axis as dates
+subplot(3,1,2)
+coin_plot(dates, tvol, 'Trade Volume', cmap, labels);
 
-h=subplot(1,2,1)
-legend(h, labels, 'Location', 'northwest'); % Add a legend
+subplot(3,1,3)
+coin_plot(dates, prices, 'Unit Price', cmap);
 
-for i = 1:length(p) % Loop over the line objects
-  set(p(i), 'Color', cmap(i, :)); % Set the color of each line
-end
 
 % Create stacked area plot of raw data
 f = figure('Name', 'raw');

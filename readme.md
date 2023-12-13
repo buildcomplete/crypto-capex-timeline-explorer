@@ -112,9 +112,16 @@ mkdir assets
 curl -X 'GET' 'https://api.coingecko.com/api/v3/coins/list?include_platform=true' -H 'accept: application/json' >> coins.json
 ```
 
-### Load Coins
+# Get dependencies
 ```ruby
 require 'json'
+require_relative "coin_functions" # Load coin functions
+require "date"
+```
+
+### Load Coins
+```ruby
+
 coins = JSON.load File.new "coins.json"
 ids = coins.map {|coin| coin["id"] }
 ```
@@ -122,12 +129,11 @@ ids = coins.map {|coin| coin["id"] }
 ### Get coin info
 The market cap from this is used to select coins of interest
 ```ruby
-require_relative "coin_functions" # Load coin functions
 
 ids.each { |x|
-
     # If we do not have the data, try to fetch it, with 5 retrys
     cmd = coin_info_curl_command x
+    #puts cmd
     i=1
     while (!coin_info_valid? x) and i < 6
         puts ("⚙"*i) +": " + x
@@ -139,7 +145,7 @@ ids.each { |x|
     # If we have valid data for the coin, then proceed
     if  coin_info_valid? x then
         puts "✔ : " + x
-
+    end
 }
 ```
 * Notice, all data fecthing stuff was run several times since the rate limit blocked download even though I tried to respect it.
@@ -161,9 +167,9 @@ market_cap.sort_by! {|x| -x[1]}
 market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
  
 # Set ranges for data acqusitions
-require "date"
+
 start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
-end_date = Date.new(2023, 12, 01) 
+end_date = Date.new(2023, 12, 12) 
 dates = (start_date..end_date).step(1)
 
 ```
@@ -182,10 +188,8 @@ expand the cap50 hashes with the birthday
 market_cap_50.map! { |x|
     x.merge( {:birthday => get_birthday(x[:id])} )
 }
-```
 
-### Get coin data pr month for 15 oldest and 15 most valuable coins (21 merged)
-```ruby
+# Get coin data pr month for 15 oldest and 15 most valuable coins (21 merged)
 old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
 dates.each {|test_date|
     # take old or coins with highest value
@@ -207,23 +211,28 @@ old_or_valuable_coins.map! {|coin|
     coin.merge( {:volume => avgVol} )}
 ```
 
-### Create CSV file with market cap for each coin
 ```ruby
+# Create CSV file with market cap for each coin
 File.open("cap.csv", "w") do |file|
-  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
-  old_or_valuable_coins.each {|c|
-    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_market_cap(c[:id], date).to_s} )
+  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  dates.each {|d|
+    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_market_cap(c[:id], d).to_s} )
   }
 end
-```
 
-### Create CSV file with market trade volume for each coin
-```ruby
+# Create CSV file with market trade volume for each coin
 # old_or_valuable_coins.sort_by! {|x| -x[:volume]}
 File.open("vol.csv", "w") do |file|
-  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
-  old_or_valuable_coins.each {|c|
-    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_volume(c[:id], date).to_s} )
+  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  dates.each {|d|
+    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_volume(c[:id], d).to_s} )
+  }
+end
+
+File.open("price.csv", "w") do |file|
+  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  dates.each {|d|
+    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
   }
 end
 ```
@@ -242,18 +251,12 @@ This is mostly just for fun to see how the data was downloaded
 
 I acually had to change the alignement of the csv file, as both octave and excel read wrong when there are more than 32768 chars in a row...
 ```ruby
-def safe_get_coin_download_time(id, date)
-  if coin_hist_has_market_cap?(id, date) then
-    return ((File.ctime coin_hist_filename(id, date)).strftime "%y-%m-%d %H:%M:%S")
-  end
-  return "0"
-end
 
 
 File.open("dtime.csv", "w") do |file|
-  file.puts(dates.inject("Dates ") {|string, date| string + ";" + date.strftime("%Y-%m-%d")})
-  old_or_valuable_coins.each {|c|
-    file.puts(dates.inject(c[:id]) {|string, date| string + ";" + safe_get_coin_download_time(c[:id], date)} )
+  file.puts(old_or_valuable_coins.inject(" ") {|string, c| string + ";" + c[:id]})
+  dates.each {|d|
+    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_download_time(c[:id], d)} )
   }
 end
 ```

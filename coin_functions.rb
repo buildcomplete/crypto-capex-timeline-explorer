@@ -2,7 +2,7 @@ require "date"
 require 'json'
 
 def coin_filename(id)
-  "coins/"+id+".json"
+  "coins/"+id.sub(" ", "_")+".json"
 end
 
 def coin_info_valid?(id)
@@ -93,14 +93,29 @@ def safe_get_coin_market_cap(id, date)
   if coin_hist_has_market_cap?(id, date) then
     return (get_coin_hist_from_file(id, date)["market_data"]["market_cap"]["usd"])
   end
-  return 0.0
+  return "-1"
+end
+
+def safe_get_coin_download_time(id, date)
+  if coin_hist_has_market_cap?(id, date) then
+    return ((File.ctime coin_hist_filename(id, date)).strftime "%Y-%m-%d %H:%M:%S")
+  end
+  return "0"
+end
+
+
+def safe_get_coin_price(id, date)
+  if coin_hist_has_market_cap?(id, date) then
+    return (get_coin_hist_from_file(id, date)["market_data"]["current_price"]["usd"])
+  end
+  return -1
 end
 
 def safe_get_coin_volume(id, date)
   if coin_hist_has_market_cap?(id, date) then
     return (get_coin_hist_from_file(id, date)["market_data"]["total_volume"]["usd"])
   end
-  return 0.0
+  return -1
 end
 
 def coin_birth_day_filename(id)
