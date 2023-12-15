@@ -90,33 +90,52 @@ def coin_hist_has_market_cap?(id, date)
 end
 
 def safe_get_coin_market_cap(id, date)
-  if coin_hist_has_market_cap?(id, date) then
-    return (get_coin_hist_from_file(id, date)["market_data"]["market_cap"]["usd"])
+  if (date < get_birthday(id))
+    return 0
   end
-  return "-1"
+
+  if coin_hist_has_market_cap?(id, date) then
+    x = (get_coin_hist_from_file(id, date)["market_data"]["market_cap"]["usd"])
+    if x != nil
+      return x
+    end
+  end
+  return -1
 end
 
 def safe_get_coin_download_time(id, date)
   if coin_hist_has_market_cap?(id, date) then
-    return ((File.ctime coin_hist_filename(id, date)).strftime "%Y-%m-%d %H:%M:%S")
+    x = ((File.ctime coin_hist_filename(id, date)).strftime "%Y-%m-%d %H:%M:%S")
+    if x != nil
+      return x
+    end
   end
   return "0"
 end
 
-
 def safe_get_coin_price(id, date)
+  if (date < get_birthday(id))
+    return 0
+  end
+
+  def safe_get_coin_volume(id, date)
+    if (date < get_birthday(id))
+      return 0
+    end
+
+    if coin_hist_has_market_cap?(id, date) then
+      return (get_coin_hist_from_file(id, date)["market_data"]["total_volume"]["usd"])
+    end
+    return -1
+  end
+
   if coin_hist_has_market_cap?(id, date) then
     return (get_coin_hist_from_file(id, date)["market_data"]["current_price"]["usd"])
   end
   return -1
 end
 
-def safe_get_coin_volume(id, date)
-  if coin_hist_has_market_cap?(id, date) then
-    return (get_coin_hist_from_file(id, date)["market_data"]["total_volume"]["usd"])
-  end
-  return -1
-end
+
 
 def coin_birth_day_filename(id)
   "coins/history/birthdays/" + id.sub(" ", "_") + ".json"
@@ -153,7 +172,7 @@ def find_coin_birthday(id, start_date, stop_date)
       return true
   end
 
-  # special condition due to round doqn logic, if not we  get stuck at border when start_date+1==stop_date.
+  # special condition due to round down logic, if not we  get stuck at border when start_date+1==stop_date.
   if (!has_market_cap and actual_date == start_date and actual_date != stop_date) then
       return find_coin_birthday(id, start_date + 1, stop_date)
   end

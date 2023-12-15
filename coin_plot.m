@@ -12,4 +12,5 @@ function coin_plot(dates, data, _title, cmap, labels = [])
   for i = 1:size(cmap,1)
     set(h(i), 'Color', cmap(i,:));
   end
+  xlim([dates(1) dates(end)]);
 end

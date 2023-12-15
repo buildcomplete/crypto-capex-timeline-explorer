@@ -212,7 +212,7 @@ old_or_valuable_coins.map! {|coin|
 ```
 
 ```ruby
-# Create CSV file with market cap for each coin
+# Save market cap for each coin
 File.open("cap.csv", "w") do |file|
   file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
   dates.each {|d|
@@ -220,8 +220,7 @@ File.open("cap.csv", "w") do |file|
   }
 end
 
-# Create CSV file with market trade volume for each coin
-# old_or_valuable_coins.sort_by! {|x| -x[:volume]}
+# Save market trade volume for each coin
 File.open("vol.csv", "w") do |file|
   file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
   dates.each {|d|
@@ -229,12 +228,20 @@ File.open("vol.csv", "w") do |file|
   }
 end
 
+# Save unit prices
 File.open("price.csv", "w") do |file|
   file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
   dates.each {|d|
     file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
   }
 end
+
+# Save coin birthdays
+File.open("birthdays.csv", "w") do |file|
+  file.puts(old_or_valuable_coins.inject("Coin") {|string, c| string + ";" + c[:id]})
+  file.puts(old_or_valuable_coins.inject("birthday") {|string, c| string + ";" + (get_birthday(c[:id]).strftime "%Y-%m-%d")})
+end
+
 ```
 
 ### Download thumbs
@@ -248,11 +255,8 @@ old_or_valuable_coins.each { |c|
 
 ### Get time and date of when data was downloaded
 This is mostly just for fun to see how the data was downloaded
-
-I acually had to change the alignement of the csv file, as both octave and excel read wrong when there are more than 32768 chars in a row...
+I had to change the alignement of the csv file, as both octave and excel read wrong when there are more than 32768 chars in a row...
 ```ruby
-
-
 File.open("dtime.csv", "w") do |file|
   file.puts(old_or_valuable_coins.inject(" ") {|string, c| string + ";" + c[:id]})
   dates.each {|d|
