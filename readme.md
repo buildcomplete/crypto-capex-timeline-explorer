@@ -121,7 +121,6 @@ require "date"
 
 ### Load Coins
 ```ruby
-
 coins = JSON.load File.new "coins.json"
 ids = coins.map {|coin| coin["id"] }
 ```
@@ -129,11 +128,9 @@ ids = coins.map {|coin| coin["id"] }
 ### Get coin info
 The market cap from this is used to select coins of interest
 ```ruby
-
 ids.each { |x|
     # If we do not have the data, try to fetch it, with 5 retrys
     cmd = coin_info_curl_command x
-    #puts cmd
     i=1
     while (!coin_info_valid? x) and i < 6
         puts ("⚙"*i) +": " + x
@@ -164,20 +161,19 @@ market_cap.sort_by! {|x| -x[1]}
 
 # Proceed only considering top50 from today 22.Nov 2023
 # and calculate percentage of market cap
-market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
+@market_cap_50 = market_cap[0..49].map {|x| {:id => x[0], :market_cap =>  x[1], :cap_ratio =>  x[1]/market_cap_total} }
  
 # Set ranges for data acqusitions
-
-start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
-end_date = Date.new(2023, 12, 12) 
-dates = (start_date..end_date).step(1)
+@start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
+@end_date = Date.new(2023, 12, 15)
+@dates = (@start_date..@end_date).step(1)
 
 ```
 # Detect first entry of each coin
 Find coin birthday, use binary search reducing number of dates to visit from worst case '(end_date-start_date).to_i => 3836' to worst case 'Math.log2(3836)=>11.9' lookups pr coin
 ```ruby
-market_cap_50.each { |x|
-    find_coin_birthday(x[:id], start_date, end_date)
+@market_cap_50.each { |x|
+    find_coin_birthday(x[:id], @start_date, @end_date)
 }
 ```
 
@@ -185,15 +181,15 @@ market_cap_50.each { |x|
 If we did find all birthdays, 
 expand the cap50 hashes with the birthday
 ```ruby
-market_cap_50.map! { |x|
+@market_cap_50.map! { |x|
     x.merge( {:birthday => get_birthday(x[:id])} )
 }
 
 # Get coin data pr month for 15 oldest and 15 most valuable coins (21 merged)
-old_or_valuable_coins = (market_cap_50[0..14] | (market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
-dates.each {|test_date|
+@old_or_valuable_coins = (@market_cap_50[0..14] | (@market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
+@dates.each {|test_date|
     # take old or coins with highest value
-    old_or_valuable_coins.each {|x| 
+    @old_or_valuable_coins.each {|x|
         if (test_date >= x[:birthday]  ) then
             download_missing_coin_hist_with_retry(x[:id], test_date, 7)
         end
@@ -214,32 +210,32 @@ old_or_valuable_coins.map! {|coin|
 ```ruby
 # Save market cap for each coin
 File.open("cap.csv", "w") do |file|
-  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
-  dates.each {|d|
-    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_market_cap(c[:id], d).to_s} )
+  file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  @dates.each {|d|
+    file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_market_cap(c[:id], d).to_s} )
   }
 end
 
 # Save market trade volume for each coin
 File.open("vol.csv", "w") do |file|
-  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
-  dates.each {|d|
-    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_volume(c[:id], d).to_s} )
+  file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  @dates.each {|d|
+    file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_volume(c[:id], d).to_s} )
   }
 end
 
 # Save unit prices
 File.open("price.csv", "w") do |file|
-  file.puts(old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
-  dates.each {|d|
-    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
+  file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
+  @dates.each {|d|
+    file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
   }
 end
 
 # Save coin birthdays
 File.open("birthdays.csv", "w") do |file|
-  file.puts(old_or_valuable_coins.inject("Coin") {|string, c| string + ";" + c[:id]})
-  file.puts(old_or_valuable_coins.inject("birthday") {|string, c| string + ";" + (get_birthday(c[:id]).strftime "%Y-%m-%d")})
+  file.puts(@old_or_valuable_coins.inject("Coin") {|string, c| string + ";" + c[:id]})
+  file.puts(@old_or_valuable_coins.inject("birthday") {|string, c| string + ";" + (get_birthday(c[:id]).strftime "%Y-%m-%d")})
 end
 
 ```
@@ -247,7 +243,7 @@ end
 ### Download thumbs
 I consider using them in my plot
 ```ruby
-old_or_valuable_coins.each { |c|
+@old_or_valuable_coins.each { |c|
   img = load_coin_data(c[:id])["image"]["thumb"]
   system "curl " + img + " > assets/"+ c[:id] +"_thumb.png"
 }
@@ -258,9 +254,9 @@ This is mostly just for fun to see how the data was downloaded
 I had to change the alignement of the csv file, as both octave and excel read wrong when there are more than 32768 chars in a row...
 ```ruby
 File.open("dtime.csv", "w") do |file|
-  file.puts(old_or_valuable_coins.inject(" ") {|string, c| string + ";" + c[:id]})
-  dates.each {|d|
-    file.puts(old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_download_time(c[:id], d)} )
+  file.puts(@old_or_valuable_coins.inject(" ") {|string, c| string + ";" + c[:id]})
+  @dates.each {|d|
+    file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_download_time(c[:id], d)} )
   }
 end
 ```

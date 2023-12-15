@@ -63,6 +63,7 @@ N_w = make_odd(ceil(7 / delta));
 N_m = make_odd(ceil(31 / delta));
 N_q = make_odd(ceil(90 / delta));
 N_y = make_odd(ceil(360 / delta));
+N_by = make_odd(ceil(2*360 / delta));
 
 mcap_smooth_w = smooth2D(mcap, 1, N_w);
 tvol_smooth_w = smooth2D(tvol, 1, N_w);
@@ -79,6 +80,10 @@ pric_smooth_q = smooth2D(pric, 1, N_q);
 mcap_smooth_y = smooth2D(mcap, 1, N_y);
 tvol_smooth_y = smooth2D(tvol, 1, N_y);
 pric_smooth_y = smooth2D(pric, 1, N_y);
+
+mcap_smooth_by = smooth2D(mcap, 1, N_by);
+tvol_smooth_by = smooth2D(tvol, 1, N_by);
+pric_smooth_by = smooth2D(pric, 1, N_by);
 
 figure('name', 'market cap average at different smothin levels');
 subplot(2,2,1)
@@ -102,26 +107,26 @@ coin_plot(dates, pric_smooth_y, 'Yearly', cmap);
 
 
 figure
-N=[N_m, N_q, N_y];
-H={'monthly','quartly','yearly'};
+N=[N_m, N_q, N_y, N_by];
+H={'monthly','quarterly','yearly', '2 years'};
 base_set = pric_smooth_w;
 
-plotIdx  = 1:6;
-plotIdx = reshape(plotIdx, 2,3);
+plotIdx  = 1:8;
+plotIdx = reshape(plotIdx, 2,4);
 nPeaks = 5; % Take this number of best opportunities and worst losses and plot
-for i=1:3
+for i=1:4
 
   G = coin_growth_rate(N(i), base_set);
 
 
-  %[pksCapMac, locCapMax] = findpeaks(base_set(1,:), 'MinPeakDistance', N_m*2, 'MinPeakHeight', 300);
-  [pksCapMac, locCapMax] = findpeaks(max(zeros(1,size(G,2)), -1*G(1,:)), 'MinPeakDistance', N_m*2, 'MinPeakHeight', 0.3);
-  [pksGrowth, locGrowth] = findpeaks(max(zeros(1,size(G,2)), G(1,:)), 'MinPeakDistance', N_m*2, 'MinPeakHeight', 0.3);
+  %[pksLoss, locLoss] = findpeaks(base_set(1,:), 'MinPeakDistance', N_m*2, 'MinPeakHeight', 300);
+  [pksLoss, locLoss] = findpeaks(max(zeros(1,size(G,2)), -1*G(1,:)), 'MinPeakDistance', N(i)/2, 'MinPeakHeight', 0.3);
+  [pksGrowth, locGrowth] = findpeaks(max(zeros(1,size(G,2)), G(1,:)), 'MinPeakDistance', N(i)/2, 'MinPeakHeight', 0.3);
 
   % Reduce peaks according to nPeaks
-  if (length(pksCapMac) > nPeaks)
-    [_, idxPeaks] = sort(pksCapMac, "descend");
-    locCapMax = locCapMax(idxPeaks)(1:nPeaks);
+  if (length(pksLoss) > nPeaks)
+    [_, idxPeaks] = sort(pksLoss, "descend");
+    locLoss = locLoss(idxPeaks)(1:nPeaks);
   endif
 
   if (length(pksGrowth) > nPeaks)
@@ -130,10 +135,21 @@ for i=1:3
   endif
 
 
-  subplot(3,2,plotIdx(1,i))
+  subplot(4,2,plotIdx(1,i))
   hold on;
-  plot(dates(locCapMax), base_set(1,locCapMax), 'r*');
+  plot(dates(locLoss), base_set(1,locLoss), 'r*');
   plot(dates(locGrowth), base_set(1,locGrowth), 'g^');
+
+  % Create line segments for growth
+  for p = locLoss
+    plot([dates(p) dates(p+N(i))], [base_set(1,p) base_set(1,p+N(i))] , 'r--');
+  endfor
+  for p = locGrowth
+    plot([dates(p) dates(p+N(i))], [base_set(1,p) base_set(1,p+N(i))] , 'g--');
+  endfor
+
+
+
   coin_plot(dates, base_set(1,:), 'weekly average market price', [cmap(1,:)]);
   legend([[labels{1} ' bottom failures' ]; [labels{1} ' top opportunities' ]; labels{1}], 'Location', 'northwest'); % Add a legend
   ylabels = get(gca, 'yticklabel');
@@ -143,11 +159,11 @@ for i=1:3
   hold off;
 
 
-  subplot(3,2,plotIdx(2,i))
+  subplot(4,2,plotIdx(2,i))
   hold on;
-  plot(dates(locCapMax), G(1,locCapMax), 'r*');
+  plot(dates(locLoss), G(1,locLoss), 'r*');
   plot(dates(locGrowth), G(1,locGrowth), 'g^');
-  coin_plot(dates, G(1,:), ['growth for ' H{i} ' investment'], [cmap(1,:)]);
+  coin_plot(dates, G(1,:), ['ROI for ' H{i} ' investment'], [cmap(1,:)]);
   plot([dates(1), dates(end)], [0 0], 'k--')
 
   ylabels = get(gca, 'yticklabel');
@@ -155,7 +171,7 @@ for i=1:3
   set(gca, 'yticklabel', ylabels_formatted);
   hold off;
 
-  locsOfInterestAI = [locCapMax locGrowth];
+  locsOfInterestAI = [locLoss locGrowth];
   datesOfInterestAI = dates(locsOfInterestAI);
   growthAI = G(1,locsOfInterestAI);
   [_, idx] = sort(locsOfInterestAI);
