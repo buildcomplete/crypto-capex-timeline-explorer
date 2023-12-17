@@ -78,7 +78,7 @@ until endOfTimes
         puts "New stuff downloaded, save files"
 
         # Save market cap for each coin
-        File.open("shared/cap.csv", "w") do |file|
+        File.open("../shared/cap.csv", "w") do |file|
             file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
             @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_market_cap(c[:id], d).to_s} )
@@ -86,7 +86,7 @@ until endOfTimes
         end
 
         # Save market trade volume for each coin
-        File.open("shared/vol.csv", "w") do |file|
+        File.open("../shared/vol.csv", "w") do |file|
         file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
         @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_volume(c[:id], d).to_s} )
@@ -94,7 +94,7 @@ until endOfTimes
         end
 
         # Save unit prices
-        File.open("shared/price.csv", "w") do |file|
+        File.open("../shared/price.csv", "w") do |file|
         file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
         @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
@@ -102,12 +102,13 @@ until endOfTimes
         end
 
         # Save coin birthdays
-        File.open("shared/birthdays.csv", "w") do |file|
+        File.open("../shared/birthdays.csv", "w") do |file|
             file.puts("Coin;birthday")
             @old_or_valuable_coins.each {|c|
                 file.puts (c[:id] + ";" + get_birthday(c[:id]).strftime("%Y-%m-%d"))
             }
         end
     end
+    puts "Waiting one hour for next check"
     sleep 60*60
 end

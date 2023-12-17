@@ -1,6 +1,5 @@
-/coins
-/coins.7z
-/coins.json
-/supported_vs_currencies.json
+download_app/coins/
+download_app/coins.json
 assets
-/shared/
+shared/
+

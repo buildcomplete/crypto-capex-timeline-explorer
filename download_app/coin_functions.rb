@@ -118,19 +118,19 @@ def safe_get_coin_price(id, date)
     return 0
   end
 
-  def safe_get_coin_volume(id, date)
-    if (date < get_birthday(id))
-      return 0
-    end
+  if coin_hist_has_market_cap?(id, date) then
+    return (get_coin_hist_from_file(id, date)["market_data"]["current_price"]["usd"])
+  end
+  return -1
+end
 
-    if coin_hist_has_market_cap?(id, date) then
-      return (get_coin_hist_from_file(id, date)["market_data"]["total_volume"]["usd"])
-    end
-    return -1
+def safe_get_coin_volume(id, date)
+  if (date < get_birthday(id))
+    return 0
   end
 
   if coin_hist_has_market_cap?(id, date) then
-    return (get_coin_hist_from_file(id, date)["market_data"]["current_price"]["usd"])
+    return (get_coin_hist_from_file(id, date)["market_data"]["total_volume"]["usd"])
   end
   return -1
 end
