@@ -1,9 +1,3 @@
-% Create a colormap with 21 unique colors
-cmap = colorcube(21);
-idx2 = (1:21)';
-idx2 = [idx2(1:2:21); flipud(idx2(2:2:21))];
-cmap = cmap(idx2,:);
-
 % Plot raw market cap
 f = figure('name', 'market cap and trade volume');
 subplot(3,1,1)

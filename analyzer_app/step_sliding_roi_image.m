@@ -32,5 +32,5 @@ for coindIdx = 1:length(labels)
     title([labels(coindIdx)' " ROI according to investment length in days"])
     ylabel("Investment length in days");
     xlabel("Day of investment");
-    print(sprintf("shared/sliding_roi/sr_%d_%s.png", coindIdx, labels{coindIdx}), '-dpng')
+    print(sprintf("../shared/sliding_roi/sr_%s.png", labels{coindIdx}), '-dpng')
 end

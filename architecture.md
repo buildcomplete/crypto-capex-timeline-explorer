@@ -63,6 +63,8 @@ Price-->ROI(Sliding ROI)-->Geekmode(Sliding ROI Geek image)
 output table
 |Processing step|Filename|content|
 |---|---|---|
-|ROI in fixed intervals|figures/fixed_roi/fr_WMQY_{idx}_{label}.png|Plot showing best opportunities for investing in specific CC given fixed interval (weekly, monthly, Quarterly, or yearly)|
-|Price|figures/price_{r,w,m,y}_{idx}_{label}.png|Prices with different smoothing levels (raw, week, month, and year)
-|Sliding ROI|figures/sliding_roi/srq_{idx}_{label}.png|Quantified image showing return of investment as function of date of investment and investment duration|
+|1) Price|shared/simple/price_{r,w,m,y}_{idx}_{label}.png|Prices with different smoothing levels (raw, week, month, and year)
+|2) Area|shared/area/mcap_tvol_price_week.png|ratio between all coins, |
+|3) ROI in fixed intervals|shared/fixed_roi/fr_WMQY_{idx}_{label}.png|Plot showing best opportunities for investing in specific CC given fixed interval (weekly, monthly, Quarterly, or yearly)|
+|4) Sliding ROI|shared/sliding_roi/srq_{idx}_{label}.png|Quantified image showing return of investment as function of date of investment and investment duration|
+

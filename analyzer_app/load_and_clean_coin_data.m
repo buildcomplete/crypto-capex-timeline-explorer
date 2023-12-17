@@ -5,10 +5,10 @@ pkg load signal % For using findPeaks
 % graphics_toolkit('qt'); % Ensure we are using qt renderer
 
 # Load data
-data_mcap = csv2cell('cap.csv', ';')';
-data_tvol = csv2cell('vol.csv', ';')';
-data_price = csv2cell('price.csv', ';')';
-data_birthdays = csv2cell('birthdays.csv', ';');
+data_mcap = csv2cell('../shared/cap.csv', ';')';
+data_tvol = csv2cell('../shared/vol.csv', ';')';
+data_price = csv2cell('../shared/price.csv', ';')';
+data_birthdays = csv2cell('../shared/birthdays.csv', ';');
 labels = data_mcap(2:end,1); % Extract the labels
 birthdays = datenum(data_birthdays(2:end,2), 'yyyy-mm-dd'); % Extract birthdays
 dates = data_mcap(1,2:end); % Extract the dates, skipping the first cell
@@ -16,6 +16,12 @@ dates = datenum(dates, 'yyyy-mm-dd'); % Convert the dates
 mcap = cell2mat(data_mcap(2:end,2:end));
 tvol = cell2mat(data_tvol(2:end,2:end));
 pric = cell2mat(data_price(2:end,2:end));
+
+% Create a colormap with unique colors
+cmap = colorcube(size(tvol,1));
+idx2 = (1:size(tvol,1))';
+idx2 = [idx2(1:2:size(tvol,1)); flipud(idx2(2:2:size(tvol,1)))];
+cmap = cmap(idx2,:);
 
 % Cleanup data
 % from before a coins birthday
@@ -37,7 +43,6 @@ N_w = make_odd(ceil(7 / delta));
 N_m = make_odd(ceil(31 / delta));
 N_q = make_odd(ceil(90 / delta));
 N_y = make_odd(ceil(360 / delta));
-N_by = make_odd(ceil(2*360 / delta));
 
 mcap_smooth_w = smooth2D(mcap, 1, N_w);
 tvol_smooth_w = smooth2D(tvol, 1, N_w);
@@ -54,7 +59,3 @@ pric_smooth_q = smooth2D(pric, 1, N_q);
 mcap_smooth_y = smooth2D(mcap, 1, N_y);
 tvol_smooth_y = smooth2D(tvol, 1, N_y);
 pric_smooth_y = smooth2D(pric, 1, N_y);
-
-mcap_smooth_by = smooth2D(mcap, 1, N_by);
-tvol_smooth_by = smooth2D(tvol, 1, N_by);
-pric_smooth_by = smooth2D(pric, 1, N_by);

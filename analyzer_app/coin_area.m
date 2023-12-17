@@ -9,7 +9,9 @@ function coin_area(dates, data, _title, cmap, labels = [])
   end
 
   % Apply colormap
-  for i = 1:21
+  for i = 1:length(cmap)
     set(h(i), 'FaceColor', cmap(i,:));
   end
+
+  xlim([min(dates) max(dates)]);
 end
