@@ -1,4 +1,4 @@
-function coin_plot(dates, data, _title, cmap, labels = [])
+function coin_plot(dates, data, _title, cmap, labels = [], formatYAxis = true)
   h = plot(dates, data'); % Create the stacked area plot
   title(_title);
   datetick('x', 'yyyy-mm-dd'); % Format the x-axis as dates
@@ -13,4 +13,10 @@ function coin_plot(dates, data, _title, cmap, labels = [])
     set(h(i), 'Color', cmap(i,:));
   end
   xlim([dates(1) dates(end)]);
+
+  if formatYAxis
+    ylabels = get(gca, 'yticklabel');
+    ylabels_formatted = cellfun(@(x) sprintf('$%dk', str2double(x)/1000), ylabels, 'UniformOutput', false);
+    set(gca, 'yticklabel', ylabels_formatted);
+  end
 end

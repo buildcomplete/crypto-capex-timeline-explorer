@@ -26,34 +26,37 @@ coin_area(dates, tvol, 'Trade Volume', cmap, labels);
 
 
 figure('name', 'market cap average at different smothin levels');
+set(gcf, 'Units', 'pixels', 'Position', [0, 0, 1000, 600])
 subplot(2,2,1)
-coin_plot(dates, mcap_smooth_w, 'Weekly', cmap, labels);
+coin_plot(dates, mcap_smooth_w, 'Weekly', viridis(21), labels);
 subplot(2,2,2)
-coin_plot(dates, mcap_smooth_m, 'Monthly', cmap);
+coin_plot(dates, mcap_smooth_m, 'Monthly', viridis(21));
 subplot(2,2,3)
-coin_plot(dates, mcap_smooth_q, 'Quarterly', cmap);
+coin_plot(dates, mcap_smooth_q, 'Quarterly', viridis(21));
 subplot(2,2,4)
-coin_plot(dates, mcap_smooth_y, 'Yearly', cmap);
+coin_plot(dates, mcap_smooth_y, 'Yearly', viridis(21));
+print("shared/simple/cap_all.png", '-dpng')
 
 figure('name', 'market price average at different smothin levels');
+set(gcf, 'Units', 'pixels', 'Position', [0, 0, 1000, 600])
 subplot(2,2,1)
-coin_plot(dates, pric_smooth_w, 'Weekly', cmap, labels);
+coin_plot(dates, pric_smooth_w, 'Weekly', viridis(21), labels);
 subplot(2,2,2)
-coin_plot(dates, pric_smooth_m, 'Monthly', cmap);
+coin_plot(dates, pric_smooth_m, 'Monthly', viridis(21));
 subplot(2,2,3)
-coin_plot(dates, pric_smooth_q, 'Quarterly', cmap);
+coin_plot(dates, pric_smooth_q, 'Quarterly', viridis(21));
 subplot(2,2,4)
-coin_plot(dates, pric_smooth_y, 'Yearly', cmap);
-
+coin_plot(dates, pric_smooth_y, 'Yearly', viridis(21));
+print("shared/simple/price_all.png", '-dpng')
 
 figure
-N=[N_m, N_q, N_y, N_by];
-H={'monthly','quarterly','yearly', '2 years'};
+N=[N_m, N_q, N_y];
+H={'monthly','quarterly','yearly'};
 base_set = pric_smooth_w;
 
 plotIdx  = 1:8;
 plotIdx = reshape(plotIdx, 2,4);
-nPeaks = 5; % Take this number of best opportunities and worst losses and plot
+nPeaks = 4; % Take this number of best opportunities and worst losses and plot
 for i=1:4
 
   G = coin_growth_rate(N(i), base_set);

@@ -235,8 +235,10 @@ end
 
 # Save coin birthdays
 File.open("birthdays.csv", "w") do |file|
-  file.puts(@old_or_valuable_coins.inject("Coin") {|string, c| string + ";" + c[:id]})
-  file.puts(@old_or_valuable_coins.inject("birthday") {|string, c| string + ";" + (get_birthday(c[:id]).strftime "%Y-%m-%d")})
+  file.puts("Coin;birthday")
+  @old_or_valuable_coins.each {|c| 
+    file.puts (c[:id] + ";" + get_birthday(c[:id]).strftime("%Y-%m-%d"))
+  }
 end
 
 ```

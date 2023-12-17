@@ -1,9 +1,16 @@
+figure
 % Create ROI image with incremental plan
 for coindIdx = 1:length(labels)
     base_set = pric_smooth_w(coindIdx,:);
+    
+    % I do not want to plot data before half a month after the coin was born
+    noGrowthBeforeValid = sum(dates < birthdays(coindIdx)); 
+
     R = zeros(1080-1,length(base_set));
     for N=2:1080 % two days to 3 years horizon
-      G = coin_growth_rate(N, base_set);
+      %G = coin_growth_rate(N, base_set);
+      G = [zeros(1,noGrowthBeforeValid) coin_growth_rate(N, base_set(1,(noGrowthBeforeValid+1):end))];
+      %G(1:noGrowthBeforeValid) = 0;
       R(N-1,:) = G;
     end
 
@@ -25,5 +32,5 @@ for coindIdx = 1:length(labels)
     title([labels(coindIdx)' " ROI according to investment length in days"])
     ylabel("Investment length in days");
     xlabel("Day of investment");
-    print(sprintf("sliding_roi/sr_%d_%s.png", coindIdx, labels{coindIdx}), '-dpng')
+    print(sprintf("shared/sliding_roi/sr_%d_%s.png", coindIdx, labels{coindIdx}), '-dpng')
 end

@@ -8,7 +8,7 @@ pkg load signal % For using findPeaks
 data_mcap = csv2cell('cap.csv', ';')';
 data_tvol = csv2cell('vol.csv', ';')';
 data_price = csv2cell('price.csv', ';')';
-data_birthdays = csv2cell('birthdays.csv', ';')';
+data_birthdays = csv2cell('birthdays.csv', ';');
 labels = data_mcap(2:end,1); % Extract the labels
 birthdays = datenum(data_birthdays(2:end,2), 'yyyy-mm-dd'); % Extract birthdays
 dates = data_mcap(1,2:end); % Extract the dates, skipping the first cell
