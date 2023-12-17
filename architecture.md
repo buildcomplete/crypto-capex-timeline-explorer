@@ -19,11 +19,11 @@ flowchart LR
  CommonFS
  CoinGeckoAPI
  
- Downloader(Downloader in Ruby\nBecause I wanted to try some ruby)--Download prices, market cap etc.-->CoinGeckoAPI
- Downloader--Save CSV file-->CommonFS
- Analyzer(Analyzer in gnu Octave\nI analyze using signal and image processing tools)--Detect new CSV using cron job-->CommonFS
- Analyzer--Save figures from Octave-->CommonFS
- Presenter(Some web server presenting the figures)-->CommonFS
+ Downloader("Downloader in Ruby\nBecause I wanted to try some ruby")--"Download prices, market cap etc."-->CoinGeckoAPI
+ Downloader--"Save CSV file"-->CommonFS
+ Analyzer("Analyzer in gnu Octave\nI analyze using signal and image processing tools")--"Detect new CSV using cron job"-->CommonFS
+ Analyzer--"Save figures from Octave"-->CommonFS
+ Presenter("Some web server presenting the figures")-->CommonFS
 ```
 
 Initialize all code was in same folder, as i approach also having the web-server, I will move the source code for the 3 services into its own folder, I will not make repositories for each, because... why?
