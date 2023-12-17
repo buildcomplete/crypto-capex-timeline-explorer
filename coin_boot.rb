@@ -26,7 +26,7 @@ market_cap.sort_by! {|x| -x[1]}
 
 # Set ranges for data acqusitions
 @start_date = Date.new(2013, 05, 01) # first, first day of month on coin gecko with any valid data
-@end_date = Date.new(2023, 12, 15)
+@end_date = Date.new(2023, 12, 16)
 @dates = (@start_date..@end_date).step(1)
 
 # Detect first entry of each coin
@@ -47,13 +47,25 @@ puts "Birthdays checked"
 }
 
 # Get coin data pr month for 15 oldest and 15 most valuable coins (21 merged)
-@old_or_valuable_coins = (@market_cap_50[0..14] | (@market_cap_50.sort_by {|x| x[:birthday]}[0..14])).sort_by {|x| x[:birthday]}
-@dates.each {|test_date|
-    # take old or coins with highest value
-    @old_or_valuable_coins.each {|x|
-        if (test_date >= x[:birthday]  ) then
-            download_missing_coin_hist_with_retry(x[:id], test_date, 7)
-        end
+@old_or_valuable_coins = (@market_cap_50[0..15] | (@market_cap_50.sort_by {|x| x[:birthday]}[0..15])).sort_by {|x| x[:birthday]}
+
+downloadCompleted = false
+until downloadCompleted
+    missing_downloads = 0
+    @dates.each {|test_date|
+        # take old or coins with highest value
+        @old_or_valuable_coins.each {|x|
+            if (test_date >= x[:birthday] ) then
+                if (!download_missing_coin_hist_with_retry(x[:id], test_date, 7)) then
+                    missing_downloads = missing_downloads + 1
+                end
+            end
+        }
     }
-}
-puts "latest coins downloaded"
+    downloadCompleted = missing_downloads==0
+    puts missing_downloads.to_s + " coins missing to be downloaded"
+    if !downloadCompleted then
+        sleep 30
+    end
+end
+puts "Download completed"

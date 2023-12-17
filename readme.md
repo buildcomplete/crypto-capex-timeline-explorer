@@ -105,6 +105,7 @@ mkdir coins
 mkdir coins/history
 mkdir coins/history/birthdays
 mkdir assets
+mkdir sliding_roi
 ```
 
 ### Fetching list of all coins from coingecko

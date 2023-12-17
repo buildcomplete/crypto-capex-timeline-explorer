@@ -39,4 +39,3 @@ for i=1:length(labels)
 end
 
 plot(dates, mcap(i,:))
-
