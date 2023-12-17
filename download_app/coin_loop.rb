@@ -74,6 +74,13 @@ until endOfTimes
     puts "Download completed"
 
     if lastSaveCount != $global_coin_hist_cache.length then
+
+        # Wait for octave to consume data, assuming go-octave file must be deleted.
+        while File.exist?("../shared/go-octave")
+            puts "Waiting for octave to consume previous batch.."
+            sleep 60
+        end
+
         lastSaveCount = $global_coin_hist_cache.length
         puts "New stuff downloaded, save files"
 
@@ -108,6 +115,9 @@ until endOfTimes
                 file.puts (c[:id] + ";" + get_birthday(c[:id]).strftime("%Y-%m-%d"))
             }
         end
+
+        # Signal to octave host that data is ready for consumption
+        File.write('../shared/go-octave', "yo go babe")
     end
     puts "Waiting one hour for next check"
     sleep 60*60

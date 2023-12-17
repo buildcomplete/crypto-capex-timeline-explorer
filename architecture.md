@@ -4,15 +4,15 @@ All analysis is done in super experimental way, so the code should be possible t
 
 - The ruby code is possible to run via *IRB* (Ruby interactive)
 - The octave code is run from Octave gui.
-- All stuff is run from containers both to make it easy to deply, but also because I cannot install stuff.
+- All stuff is run from containers both to make it easy to deploy, but also because I cannot install stuff.
 - Initially all code was developed in a readme and copy pasted, later to be refactored
-- Data was (and is) downloaded via Coingecko public API, this takes ages to download... I do respect the throtling
+- Data was (and is) downloaded via Coingecko public API, this takes ages to download... I do respect the throttling
 
 
 To consolidate data I write a small website - I hate javascript, so I will try not to use it, it does give some limitations on how i can cross reference data.
 
 Anyway, the architecture will be something like this
-No fcing enterprise architeture here, no database, no message broker, no sht, just files
+No f🧨ng enterprise architecture here. NO DATABASE, NO MESSAGE BROKER, no sh🚀t, just files.
 ## System Architecture
 ```mermaid
 flowchart LR
@@ -43,12 +43,14 @@ output table
 |shared/cap.csv|Market cap for analyzed CC since the beginning|
 |shared/price.csv|unit price for CC at given data|
 |shared/vol.csv|Trade volume for CC at given data|
+|shared/go-octave|Synchronization file to let octave run, and block writing new data until consumed|
+
 
 ## Analysis and summary generation, 2nd level transformations
 Something needs to monitor and trigger octave to run and output new files
 ```mermaid
 flowchart LR
-    ChangeDetect--Monitor FS for new csv-->FSCSV("Input, Ready date consumed as csv")
+    ChangeDetect--"Monitor FS for go-octave🚀"-->FSCSV("Input, Ready date consumed as csv")
     ChangeDetect--Invoke-->Analyzer(Octave analyzer script)--Read CSV-->FSCSV
     Analyzer-->FSFigures("Output figures as images")
 ```
