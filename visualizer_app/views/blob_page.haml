@@ -1,0 +1,5 @@
+%select{:onchange => "showImage(this)"}
+  - coins.each do |coin|
+    %option{:value => coin[:id]}= coin[:id]
+
+%img{:src => "/simple/price_bitcoin.png"}
