@@ -1,4 +1,4 @@
-coin_download/download_app/coins/
-coin_download/download_app/coins.json
+coin_download/app_data/
 init/root/
 shared_data/
+coin_download/root

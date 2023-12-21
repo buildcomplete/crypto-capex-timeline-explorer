@@ -1,3 +1,3 @@
 FROM ruby:latest
-WORKDIR /root/gecko
+WORKDIR /download_app
 CMD ["tail", "-f", "/dev/null"]

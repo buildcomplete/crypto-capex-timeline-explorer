@@ -4,9 +4,9 @@ require_relative "coin_functions" # Load coin functions
 require "date"
 
 # Load Coins
-coins = JSON.load File.new "coins.json"
+coins = JSON.load File.new "/coin_data/coins.json"
 ids = coins.map {|coin| coin["id"] }
-puts "Coins index loaded"
+puts "Coins index loaded, length: " + coins.length.to_s
 
 # Filter data when download has succeded
 # Filter coins with no capital value and calculate total capital
@@ -15,7 +15,7 @@ market_cap = ids
         (coin_info_valid? id) ? [id, (load_coin_data id)["market_data"]["market_cap"]["usd"]] : [id, 0] }
     .filter{|x|
         ( (!x[1].nil?) and (x[1] > 0)) }
-puts "Crap filtered"
+puts "Crap filtered, good length: " + market_cap.length.to_s
 
 market_cap_total = market_cap.inject(0.0) {|tot, x| tot+x[1]}
 market_cap.sort_by! {|x| -x[1]}
@@ -76,7 +76,7 @@ until endOfTimes
     if lastSaveCount != $global_coin_hist_cache.length then
 
         # Wait for octave to consume data, assuming go-octave file must be deleted.
-        while File.exist?("../shared/go-octave")
+        while File.exist?("/shared/go-octave")
             puts "Waiting for octave to consume previous batch.."
             sleep 60
         end
@@ -85,7 +85,7 @@ until endOfTimes
         puts "New stuff downloaded, save files"
 
         # Save market cap for each coin
-        File.open("../shared/cap.csv", "w") do |file|
+        File.open("/shared/cap.csv", "w") do |file|
             file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
             @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_market_cap(c[:id], d).to_s} )
@@ -93,7 +93,7 @@ until endOfTimes
         end
 
         # Save market trade volume for each coin
-        File.open("../shared/vol.csv", "w") do |file|
+        File.open("/shared/vol.csv", "w") do |file|
         file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
         @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_volume(c[:id], d).to_s} )
@@ -101,7 +101,7 @@ until endOfTimes
         end
 
         # Save unit prices
-        File.open("../shared/price.csv", "w") do |file|
+        File.open("/shared/price.csv", "w") do |file|
         file.puts(@old_or_valuable_coins.inject("Dates") {|string, c| string + ";" + c[:id]})
         @dates.each {|d|
             file.puts(@old_or_valuable_coins.inject(d.strftime "%Y-%m-%d") {|string, c| string + ";" + safe_get_coin_price(c[:id], d).to_s} )
@@ -109,7 +109,7 @@ until endOfTimes
         end
 
         # Save coin birthdays
-        File.open("../shared/birthdays.csv", "w") do |file|
+        File.open("/shared/birthdays.csv", "w") do |file|
             file.puts("Coin;birthday")
             @old_or_valuable_coins.each {|c|
                 file.puts (c[:id] + ";" + get_birthday(c[:id]).strftime("%Y-%m-%d"))
@@ -117,7 +117,7 @@ until endOfTimes
         end
 
         # Signal to octave host that data is ready for consumption
-        File.write('../shared/go-octave', "yo go babe")
+        File.write('/shared/go-octave', "yo go babe")
     end
     puts "Waiting one hour for next check"
     sleep 60*60

@@ -4,17 +4,24 @@ services:
     container_name: coinloader      
     build: './coin_download/'
     volumes:
-      - ./init/root:/root
+      - ./coin_download/download_app:/download_app
+      - ./coin_download/app_data:/coin_data
+      - ./shared_data:/shared
+      - ./coin_download/root:/root
   coinanalyzer:
     container_name: coinanalyzer
     build: './coin_analyze/'
     volumes:
-      - ./init/root:/root
+      - ./coin_analyze/analyzer_app:/analyzer_app
+      - ./shared_data:/shared
+      - ./coin_analyze/root:/root
+
   coinpresenter:
     container_name: coinpresenter
     build: './coin_present/'
     volumes:
-      - ./init/root/gecko/visualizer_app:/app
-      - ./init/root/gecko/shared:/shared
+      - ./coin_present/visualizer_app:/visualizer_app
+      - ./shared_data:/shared
+
     ports:
       - "85:5000"

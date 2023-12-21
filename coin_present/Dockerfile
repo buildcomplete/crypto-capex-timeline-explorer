@@ -1,5 +1,5 @@
 FROM ruby:2.7-alpine
-WORKDIR /app
+WORKDIR /visualizer_app
 RUN apk add --no-cache build-base
 RUN gem install sinatra puma
 RUN gem install rerun

@@ -2,8 +2,17 @@ require "date"
 require 'json'
 
 def coin_filename(id)
-  "coins/"+id.sub(" ", "_")+".json"
+  "/coin_data/coins/"+id.sub(" ", "_")+".json"
 end
+
+def coin_hist_filename(id, date)
+  "/coin_data/coins/history/" + id.sub(" ", "_") + "-"+(date.strftime "%d-%m-%Y") +".json"
+end
+
+def coin_birth_day_filename(id)
+  "/coin_data/coins/history/birthdays/" + id.sub(" ", "_") + ".json"
+end
+
 
 def coin_info_valid?(id)
   x = coin_filename(id)
@@ -24,10 +33,6 @@ end
 
 def coin_info_curl_command(id)
   "curl -X 'GET' 'https://api.coingecko.com/api/v3/coins/" + id.sub(" ", "%20") + "?localization=false&tickers=false&market_data=true&community_data=true&developer_data=true&sparkline=false' -H 'accept: application/json' > " + (coin_filename id)
-end
-
-def coin_hist_filename(id, date)
-  "coins/history/" + id.sub(" ", "_") + "-"+(date.strftime "%d-%m-%Y") +".json"
 end
 
 def get_coin_history_command(id, date)
@@ -137,9 +142,6 @@ end
 
 
 
-def coin_birth_day_filename(id)
-  "coins/history/birthdays/" + id.sub(" ", "_") + ".json"
-end
 
 def save_birthday(id, date)
   File.write(coin_birth_day_filename(id), date.to_json)
