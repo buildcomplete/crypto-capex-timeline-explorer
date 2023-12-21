@@ -1,0 +1,39 @@
+%p
+  Notice that the maximum amount / maximum computed result is on top,
+  scrolling down will go to the start of the processing.
+
+%span
+  Select currency: 
+  %select{:onchange => "showTab(this.value)"}
+    - coins.each do |coin|
+      %option{:value => coin[:id]}= coin[:id]
+- coins.each do |coin|
+  %div{:class => 'tabs', :name => coin[:id]}
+    %h3
+      Sliding ROI - crypto fire images
+    %p
+      Calculate ROI based on investment plans from 2:1080 days.<br />
+      Threshold result according to the annotations, mostly tuned to be visible appealing,<br />
+      The intent was to identify if there are any patterns in this that can help identify wheter or not an investment is good.<br />
+      Judge yourself 😁
+    %img{:src => coin[:slidingRoiImg], :width => "1200px" }
+    
+    %h3
+      Fixed investment plan ROI
+    %p
+      Calculate ROI based on 3 investment plans, Monthly, Quarterly, and yearly.<br />
+      The week smoother market price is used for input, not daily.<br />
+      I think it gives a good dynamic between details and noice, using daily will give a very noisy signal <br />
+      Using 
+
+    %img{:src => coin[:fixedRoiImg], :width => "1200px" }
+    %h3
+      First step
+    %p
+      Market Price for #{ coin[:id] }
+      The prices are smothed at different levels trying to identify trends
+    %img{:src => coin[:priceImg], :width => "1200px" }
+    
+
+:javascript
+  showTab("#{ coins[0][:id] }")

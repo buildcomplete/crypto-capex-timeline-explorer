@@ -1,5 +1,4 @@
-download_app/coins/
-download_app/coins.json
-assets
-shared/
-
+coin_download/download_app/coins/
+coin_download/download_app/coins.json
+init/root/
+shared_data/

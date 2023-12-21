@@ -1,0 +1,33 @@
+%head
+
+  %link{ rel: "stylesheet", href: "/css/topmenu.css" }
+  %title
+    crypto currency number crunching server
+
+  -# some head tags here
+  :javascript
+    function showTab(tabId) {
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabs");
+      for (i = 0; i < tabcontent.length; i++) {
+        tab = tabcontent[i];
+        tab.style.display = (tab.getAttribute('name') == tabId) 
+          ? "block" 
+          : "none";
+      }
+    }
+  
+
+%body
+ 
+  -# header menu here
+  %div{:class =>"topnav"}
+    %a{:href => "/"}
+      Crypto Crunch
+    %a{:href => "/coin"}
+      Coin flames
+    %p
+      Zero dependencies HTML crypto currency number crunching server
+  
+  != yield
+  -# a bit footer here

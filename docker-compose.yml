@@ -1,0 +1,20 @@
+version: "3.2"
+services:
+  coinloader:
+    container_name: coinloader      
+    build: './coin_download/'
+    volumes:
+      - ./init/root:/root
+  coinanalyzer:
+    container_name: coinanalyzer
+    build: './coin_analyze/'
+    volumes:
+      - ./init/root:/root
+  coinpresenter:
+    container_name: coinpresenter
+    build: './coin_present/'
+    volumes:
+      - ./init/root/gecko/visualizer_app:/app
+      - ./init/root/gecko/shared:/shared
+    ports:
+      - "85:5000"
