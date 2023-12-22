@@ -14,5 +14,5 @@ for coindIdx = 1:length(labels)
     coin_plot(dates, pric_smooth_y(coindIdx,:), 'Yearly', [0 0 0]);
     
     title([labels(coindIdx)' " price yearly average"])
-    print(sprintf("../shared/simple/price_%s.png", labels{coindIdx}), '-dpng')
+    print(sprintf("/shared/simple/price_%s.png", labels{coindIdx}), '-dpng')
 end

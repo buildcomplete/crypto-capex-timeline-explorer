@@ -5,10 +5,10 @@ pkg load signal % For using findPeaks
 % graphics_toolkit('qt'); % Ensure we are using qt renderer
 
 # Load data
-data_mcap = csv2cell('../shared/cap.csv', ';')';
-data_tvol = csv2cell('../shared/vol.csv', ';')';
-data_price = csv2cell('../shared/price.csv', ';')';
-data_birthdays = csv2cell('../shared/birthdays.csv', ';');
+data_mcap = csv2cell('/shared/cap.csv', ';')';
+data_tvol = csv2cell('/shared/vol.csv', ';')';
+data_price = csv2cell('/shared/price.csv', ';')';
+data_birthdays = csv2cell('/shared/birthdays.csv', ';');
 labels = data_mcap(2:end,1); % Extract the labels
 birthdays = datenum(data_birthdays(2:end,2), 'yyyy-mm-dd'); % Extract birthdays
 dates = data_mcap(1,2:end); % Extract the dates, skipping the first cell

@@ -78,5 +78,5 @@ for coindIdx=1:length(labels)
         growthAI = growthAI(idx)';
     ##  save_table(datesOfInterestAI, growthAI, 'growthAI.md', 'Dates of interest (Annual investment)', 'Growth');
     end
-    print(sprintf("../shared/fixed_roi/fr_WMQY_%s.png", labels{coindIdx}), '-dpng')
+    print(sprintf("/shared/fixed_roi/fr_WMQY_%s.png", labels{coindIdx}), '-dpng')
 end

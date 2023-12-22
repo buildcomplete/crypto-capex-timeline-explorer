@@ -22,7 +22,7 @@ ylabels_formatted = cellfun(@(x) sprintf('$%dB', str2double(x)/1e9), ylabels, 'U
 set(gca, 'yticklabel', ylabels_formatted);
 
 set(gcf, 'Units', 'pixels', 'Position', [0, 0, 800, 800])
-print("../shared/area/mcap_tvol_price_week.png", '-dpng')
+print("/shared/area/mcap_tvol_price_week.png", '-dpng')
 
 close
 
@@ -41,6 +41,6 @@ figure;
 set(gcf, 'Units', 'pixels', 'Position', [0, 0, 800, 500])
 coin_area(dates, mcap_ratio, 'market cap ratio', cmap)
 ylim([0 1])
-print("../shared/area/mcap_ratio.png", '-dpng')
+print("/shared/area/mcap_ratio.png", '-dpng')
 
 close

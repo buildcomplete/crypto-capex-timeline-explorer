@@ -7,7 +7,7 @@ import os
 import time
 
 while True:
-    if os.path.exists('../shared/go-octave'):
+    if os.path.exists('/shared/go-octave'):
         os.system('octave crush.m')
-        os.remove('../shared/go-octave')
+        os.remove('/shared/go-octave')
     time.sleep(10)
