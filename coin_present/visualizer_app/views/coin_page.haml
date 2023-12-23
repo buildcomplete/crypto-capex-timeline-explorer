@@ -4,9 +4,9 @@
 
 %span
   Select currency: 
-  %select{:onchange => "showTab(this.value)"}
+  %select{:onchange => "showTab(this.value)", :title => "Currency", :name => "CurrencySelector"}
     - coins.each do |coin|
-      %option{:value => coin[:id]}= coin[:id]
+      %option{:value => coin[:id]}= coin[:id].capitalize
 - coins.each do |coin|
   %div{:class => 'tabs', :name => coin[:id]}
     %h3
@@ -16,7 +16,7 @@
       Threshold result according to the annotations, mostly tuned to be visible appealing,<br />
       The intent was to identify if there are any patterns in this that can help identify wheter or not an investment is good.<br />
       Judge yourself 😁
-    %img{:src => coin[:slidingRoiImg], :width => "1200px" }
+    %img{:src => coin[:slidingRoiImg], :width => "80%" }
     
     %h3
       Fixed investment plan ROI
@@ -26,13 +26,13 @@
       I think it gives a good dynamic between details and noice, using daily will give a very noisy signal <br />
       Using 
 
-    %img{:src => coin[:fixedRoiImg], :width => "1200px" }
+    %img{:src => coin[:fixedRoiImg], :width => "80%" }
     %h3
       First step
     %p
       Market Price for #{ coin[:id] }
       The prices are smothed at different levels trying to identify trends
-    %img{:src => coin[:priceImg], :width => "1200px" }
+    %img{:src => coin[:priceImg], :width => "80%" }
     
 
 :javascript
