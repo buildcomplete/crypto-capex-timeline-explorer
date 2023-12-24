@@ -14,7 +14,7 @@
     %p
       Calculate ROI based on investment plans from 2:1080 days.<br />
       Threshold result according to the annotations, mostly tuned to be visible appealing,<br />
-      The intent was to identify if there are any patterns in this that can help identify wheter or not an investment is good.<br />
+      The intent was to identify if there are any patterns that can help identify wheter or not an investment is good.<br />
       Judge yourself 😁
     %img{:src => coin[:slidingRoiImg], :width => "80%" }
     
@@ -22,10 +22,8 @@
       Fixed investment plan ROI
     %p
       Calculate ROI based on 3 investment plans, Monthly, Quarterly, and yearly.<br />
-      The week smoother market price is used for input, not daily.<br />
-      I think it gives a good dynamic between details and noice, using daily will give a very noisy signal <br />
-      Using 
-
+      The week smoothed market price is used for input, not daily.<br />
+      I think it gives a good dynamic between details and noise, using daily will give a very noisy signal
     %img{:src => coin[:fixedRoiImg], :width => "80%" }
     %h3
       First step
