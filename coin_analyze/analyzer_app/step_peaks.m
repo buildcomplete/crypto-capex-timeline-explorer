@@ -66,7 +66,7 @@ for coindIdx=1:length(labels)
         plot([dates(1), dates(end)], [0 0], 'k--')
 
         ylabels = get(gca, 'yticklabel');
-        ylabels_formatted = cellfun(@(x) sprintf('$%d%%', str2double(x)*100), ylabels, 'UniformOutput', false);
+        ylabels_formatted = cellfun(@(x) sprintf('%d%%', str2double(x)*100), ylabels, 'UniformOutput', false);
         set(gca, 'yticklabel', ylabels_formatted);
         hold off;
 
