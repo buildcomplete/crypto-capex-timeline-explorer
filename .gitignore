@@ -1,5 +1,7 @@
 coin_download/app_data/
 init/root/
-shared_data/
+shared_data/**/*.png
+shared_data/**/*.csv
+shared_data/sliding_roi
 coin_analyze/root
 coin_download/root
