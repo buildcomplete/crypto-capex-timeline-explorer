@@ -6,4 +6,6 @@ RUN gem install rerun
 RUN gem install haml
 EXPOSE 5000
 #CMD ["puma", "-b", "tcp://0.0.0.0:5000", "-w", "1", "app.rb"]
-CMD ["tail", "-f", "/dev/null"]
+#CMD ["tail", "-f", "/dev/null"]
+ENV APP_ENV=production
+CMD ["ruby", "app.rb"]

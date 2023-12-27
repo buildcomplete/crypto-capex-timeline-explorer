@@ -7,14 +7,14 @@ services:
       - ./coin_download/download_app:/download_app
       - ./coin_download/app_data:/coin_data
       - ./shared_data:/shared
-      - ./coin_download/root:/root
+        #      - ./coin_download/root:/root
   coinanalyzer:
     container_name: coinanalyzer
     build: './coin_analyze/'
     volumes:
       - ./coin_analyze/analyzer_app:/analyzer_app
       - ./shared_data:/shared
-      - ./coin_analyze/root:/root
+        #      - ./coin_analyze/root:/root
 
   coinpresenter:
     container_name: coinpresenter
